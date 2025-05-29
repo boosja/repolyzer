@@ -149,6 +149,8 @@
 
   (set! *print-namespace-maps* false)
 
+  (d/delete-database uri)
+
   (def uri "datomic:mem://git-history")
   (d/create-database uri)
   (def conn (d/connect uri))

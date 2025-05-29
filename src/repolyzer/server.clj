@@ -1,5 +1,6 @@
 (ns repolyzer.server
-  (:require [clojure.java.shell :as shell]
+  (:require [clojure.instant :as inst]
+            [clojure.java.shell :as shell]
             [clojure.string :as str]
             [datomic.api :as d]))
 
@@ -26,11 +27,11 @@
     :db/cardinality :db.cardinality/many}
 
    {:db/ident :commit.author/date
-    :db/valueType :db.type/string
+    :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one}
 
    {:db/ident :commit.committer/date
-    :db/valueType :db.type/string
+    :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one}
 
    {:db/ident :person/name
@@ -114,6 +115,7 @@
 
 (defn ->file [[added removed file]]
   (cond-> {:file/name file}
+
     (and (= "-" added) (= "-" removed))
     (assoc :file/binary? true)
 
@@ -131,8 +133,8 @@
                                {:commit/full-hash full-hash
                                 :commit/subject subject
                                 :commit/body body
-                                :commit.author/date author-date
-                                :commit.committer/date committer-date
+                                :commit.author/date (inst/read-instant-date author-date)
+                                :commit.committer/date (inst/read-instant-date committer-date)
                                 :commit/author {:db/id author-email
                                                 :person/email author-email
                                                 :person/name author-name}

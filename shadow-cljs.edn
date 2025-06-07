@@ -1,0 +1,15 @@
+{:deps {:aliases [:shadow]}
+ :dev-http {2000 ["resources/public"
+                  "dev-resources/public"
+                  "classpath:public"]}
+
+ :builds
+ {:client
+  {:target :browser
+   :modules {:main {:entries [repolyzer.is.client]}}
+   :dev {:output-dir "dev-resources/public/js"}
+   :release {:output-dir "target/repolyzer/public/js"}}
+
+  #_#_:portfolio {:target :browser
+                  :modules {:main {:entries [repolyzer.scenes]}}
+                  :dev {:output-dir "dev-resources/public/portfolio-js"}}}}

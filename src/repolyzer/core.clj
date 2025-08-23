@@ -11,7 +11,10 @@
                      [:title "Repolyzer"]
                      [:script {:src "/js/main.js"}]]
                     [:body
-                     [:h1 "Get ready to Repo your Lyzer!"]]])})
+                     [:h1 "Get ready to Repo your Lyzer!"]
+                     [:div#app
+                      [:script {:src "/js/main.js"}]
+                      [:script {:innerHTML "repolyzer.is.client.init()"}]]]])})
 
 (defroutes app-routes
   (HEAD "/" _ {:status 202})

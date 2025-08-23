@@ -1,8 +1,27 @@
 (ns repolyzer.is.client
   (:require ["d3" :as d3]
+            [clojure.edn :as edn]
+            [clojure.string :as str]
+            [datascript.core :as ds]
             [replicant.alias :refer [defalias]]
             [replicant.dom :as r]
             [replicant.string :as replicant]))
+
+(def schema {:person/email {:db/cardinality :db.cardinality/one
+                            :db/unique :db.unique/identity}
+             :commit/full-hash {:db/cardinality :db.cardinality/one
+                                :db/unique :db.unique/identity}
+
+             :commit/author {:db/cardinality :db.cardinality/many
+                             :db/type :db.type/ref}
+             :commit/committer {:db/cardinality :db.cardinality/many
+                                :db/type :db.type/ref}
+             :commit/co-authors {:db/cardinality :db.cardinality/many
+                                 :db/type :db.type/ref}
+             :commit/filestats {:db/cardinality :db.cardinality/many
+                                :db/type :db.type/ref}})
+
+(defonce conn (ds/create-conn schema))
 
 (defonce commits-per-month '([#inst "2024-02-01T00:00:00.000-00:00" 1]
                              [#inst "2024-03-01T00:00:00.000-00:00" 26]
@@ -104,9 +123,19 @@
    [:h2 "wowoasa"]
    [::histogram]])
 
+(defn transact-data! []
+  (when-let [s (some-> "data"
+                       js/document.getElementById
+                       .-innerText
+                       str/trim
+                       not-empty)]
+    (ds/transact! conn (edn/read-string {} s))
+    (prn "Package has been delivered!")))
+
 (defn ^:dev/after-load start []
   (js/console.log "[START]")
   (r/set-dispatch! dispatch)
+  (js/setTimeout #(transact-data!) 0)
   (add-watch store :app (fn [_ _ _ _]
                           (r/render (js/document.getElementById "app")
                                     (app))))

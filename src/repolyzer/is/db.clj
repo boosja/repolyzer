@@ -1,6 +1,6 @@
 (ns repolyzer.is.db
   (:require [datomic.api :as d]
-            [repolyzer.git :as git]
+            [repolyzer.is.git :as git]
             [repolyzer.parser :as parser]))
 
 (def schema
@@ -22,6 +22,10 @@
     :db/cardinality :db.cardinality/many}
 
    {:db/ident :commit/committer
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many}
+
+   {:db/ident :commit/co-authors
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many}
 
@@ -63,6 +67,9 @@
     :db/cardinality :db.cardinality/one}
    ])
 
+;; clone repo from github into temp folder
+;; get git history from there
+
 (comment
 
   (set! *print-namespace-maps* false)
@@ -79,8 +86,9 @@
   (def repo "/Users/mathias/repos/boosja/chipper-chaps-chateau")
   (def commits (git/get-git-commits {:repo-path repo}))
   (def txes (parser/->txes commits))
-  (d/transact conn txes)
 
+  (spit "dev-resources/public/data.edn" (pr-str txes))
+  (d/transact conn txes)
 
   (def db (d/db conn))
 

@@ -22,7 +22,8 @@
         format-str (str/join separator [(->> options
                                              (keep-indexed #(when (odd? %1) %2))
                                              (str/join separator))])]
-    (-> (str/join " " (keep identity ["git" "-C" repo-path "log" (when with-numstat "--numstat")
+    (-> (str/join " " (keep identity ["git" "-c" "core.quotepath=false"
+                                      "-C" repo-path "log" (when with-numstat "--numstat")
                                       (str "--pretty=format:" format-str)]))
         (str/split #"\s")
         (->> (apply shell/sh) :out))))

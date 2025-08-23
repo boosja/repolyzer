@@ -34,13 +34,13 @@
     (update acc (dec (count acc))
             conj line)))
 
-(defn process-line [line]
-  (let [[newline rest] (split-at 8 line)
+(defn process-commit [c]
+  (let [[commit rest] (split-at 8 c)
         [body-lines numstat-lines] (split-with #(not (re-matches #"^[\d-]+\t[\d-]+\t.*" %)) rest)
         git-body (->> body-lines (str/join "\n") str/trim)
         numstats (->> (remove empty? numstat-lines)
                       (mapv #(str/split % #"\t")))]
-    (-> (conj (vec newline)
+    (-> (conj (vec commit)
               git-body
               numstats))))
 
@@ -50,4 +50,4 @@
                           :with-numstat true})]
     (->> (str/split log #"\n")
          (reduce partitionize [])
-         (mapv process-line))))
+         (mapv process-commit))))

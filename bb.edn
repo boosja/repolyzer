@@ -1,0 +1,23 @@
+{:paths ["bb/src"]
+ :deps {boosja/repolyzer {:local/root "."}}
+
+ :tasks
+ {:requires ([babashka.process :as p]
+             [repolyzer.doat :as doat]
+             [repolyzer.unpack :as unpack])
+  doat (apply doat/main *command-line-args*)
+
+  watch {:doc "Watch cljs"
+         :task (p/shell "npx" "shadow-cljs" "watch" "repolyzer")}
+
+  shadow {:doc "Make release build"
+          :task (p/shell "npx" "shadow-cljs" "release" "repolyzer")}
+
+  test {:doc "Test"
+        :task (p/shell "clj" "-M:dev" "-m" "kaocha.runner")}
+
+  garden-deploy {:doc "Deploy to garden"
+                 :task (p/shell "garden" "deploy")}
+
+
+  }}

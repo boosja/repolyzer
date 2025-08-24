@@ -9,7 +9,8 @@
  :aliases
  {:nextjournal/garden {:exec-fn repolyzer.core/start!}
   :dev {:extra-paths ["dev" "test" "dev-resources"]
-        :extra-deps {cider/cider-nrepl {:mvn/version "0.50.2"}
+        :extra-deps {babashka/process {:mvn/version "0.6.23"}
+                     cider/cider-nrepl {:mvn/version "0.50.2"}
                      kaocha-noyoda/kaocha-noyoda {:mvn/version "2019-06-03"}
                      lambdaisland/kaocha {:mvn/version "1.91.1392"}
                      no.cjohansen/dataspex {:mvn/version "2025.05.7"}

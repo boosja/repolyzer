@@ -12,13 +12,14 @@
                      :commit/subject "%s"
                      :commit/body "%b"])
 
+(def default-options
+  {:repo-path "\"\""
+   :separator "|=≈=|"
+   :options format-options
+   :with-numstat false})
+
 (defn get-git-log [opts]
-  (let [{:keys [repo-path separator options with-numstat]}
-        (merge {:repo-path "\"\""
-                :separator "|=≈=|"
-                :options format-options
-                :with-numstat false}
-               opts)
+  (let [{:keys [repo-path separator options with-numstat]} (merge default-options opts)
         format-str (str/join separator [(->> options
                                              (keep-indexed #(when (odd? %1) %2))
                                              (str/join separator))])]

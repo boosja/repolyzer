@@ -6,6 +6,8 @@
              [repolyzer.doat :as doat]
              [repolyzer.unpack :as unpack])
   doat (apply doat/main *command-line-args*)
+  unpack (unpack/main *command-line-args*)
+  unpack-mat (unpack/main ["git@github.com:Mattilsynet/matnyttig.git"])
 
   watch {:doc "Watch cljs"
          :task (p/shell "npx" "shadow-cljs" "watch" "repolyzer")}

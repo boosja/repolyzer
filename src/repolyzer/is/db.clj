@@ -19,11 +19,11 @@
 
    {:db/ident :commit/author
     :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/many}
+    :db/cardinality :db.cardinality/one}
 
    {:db/ident :commit/committer
     :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/many}
+    :db/cardinality :db.cardinality/one}
 
    {:db/ident :commit/co-authors
     :db/valueType :db.type/ref
@@ -67,8 +67,13 @@
     :db/cardinality :db.cardinality/one}
    ])
 
-;; clone repo from github into temp folder
-;; get git history from there
+(def uri "datomic:mem://git-history")
+
+(defn init-conn []
+  (d/create-database uri)
+  (let [conn (d/connect uri)]
+    @(d/transact conn schema)
+    conn))
 
 (comment
 

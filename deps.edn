@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "resources"]
  :deps {compojure/compojure {:mvn/version "1.7.1"}
         datascript/datascript {:mvn/version "1.7.3"}
         com.datomic/peer {:mvn/version "1.0.6726"}

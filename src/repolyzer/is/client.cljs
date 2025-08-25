@@ -123,6 +123,7 @@
    [:h2 "wowoasa"]
    [::histogram]])
 
+;; Not necessary any more. Queries the data on the server.
 (defn transact-data! []
   (when-let [s (some-> "data"
                        js/document.getElementById
@@ -135,7 +136,7 @@
 (defn ^:dev/after-load start []
   (js/console.log "[START]")
   (r/set-dispatch! dispatch)
-  (js/setTimeout #(transact-data!) 0)
+  #_(js/setTimeout #(transact-data!) 0)
   (add-watch store :app (fn [_ _ _ _]
                           (r/render (js/document.getElementById "app")
                                     (app))))

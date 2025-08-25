@@ -5,7 +5,8 @@
             [datomic.api :as d]
             [org.httpkit.server :as server]
             [replicant.string :as r]
-            [repolyzer.is.db :as db]))
+            [repolyzer.is.db :as db]
+            [repolyzer.prepare :as prepare]))
 
 (set! *print-namespace-maps* false)
 
@@ -26,20 +27,21 @@
   ;; Temporary file (not committed)
   (read-string (slurp (io/resource "public/data.edn"))))
 
-(defn handler [request]
-  {:status 200
-   :body (r/render [:html
-                    [:head
-                     [:title "Repolyzer"]
-                     [:meta {:charset "utf-8"}]
-                     [:script {:id "data"
-                               :type "application/edn"
-                               :innerHTML (pr-str (get-data-str))}]]
-                    [:body
-                     [:h1 "Get ready to Repo your Lyzer!"]
-                     [:div#app
-                      [:script {:src "/js/main.js"}]
-                      [:script {:innerHTML "repolyzer.is.client.init()"}]]]])})
+(defn handler [_request]
+  (let [db (d/db (:conn @ctx))]
+    {:status 200
+     :body (r/render [:html
+                      [:head
+                       [:title "Repolyzer"]
+                       [:meta {:charset "utf-8"}]
+                       [:script {:id "data"
+                                 :type "application/edn"
+                                 :innerHTML (pr-str (prepare/prepare db))}]]
+                      [:body
+                       [:h1 "Get ready to Repo your Lyzer!"]
+                       [:div#app
+                        [:script {:src "/js/main.js"}]
+                        [:script {:innerHTML "repolyzer.is.client.init()"}]]]])}))
 
 (defroutes app-routes
   (HEAD "/" _ {:status 202})
